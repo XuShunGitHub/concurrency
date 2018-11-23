@@ -1,6 +1,8 @@
 package com.example.concurrency;
 
 import com.example.concurrency.annoations.NotThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -9,6 +11,9 @@ import java.util.concurrent.Semaphore;
 
 @NotThreadSafe
 public class ConcurrencyTest {
+
+    private static Logger logger = LoggerFactory.getLogger(ConcurrencyTest.class);
+
     private static int clientTotal = 5000;
     private static int threadTotal = 50;
     private static int count = 0;
@@ -24,14 +29,14 @@ public class ConcurrencyTest {
                     add();
                     semaphore.release();
                 }catch (Exception e){
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             });
             countDownLatch.countDown();
         }
         countDownLatch.await();
         executorService.shutdown();
-        System.out.println("count: " + count);
+        logger.info("count: " + count);
     }
 
     private static void add(){

@@ -1,0 +1,5 @@
+spring:
+  profiles:
+      #表示所用配置文件为application-dev.yml
+      active: dev
+
