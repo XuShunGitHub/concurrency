@@ -1,4 +1,4 @@
-package com.example.concurrency;
+package com.example.concurrency.count;
 
 import com.example.concurrency.annoations.NotThreadSafe;
 import org.slf4j.Logger;
@@ -10,9 +10,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 @NotThreadSafe
-public class ConcurrencyTest {
+public class CountExample1 {
 
-    private static Logger logger = LoggerFactory.getLogger(ConcurrencyTest.class);
+    private static Logger logger = LoggerFactory.getLogger(CountExample1.class);
 
     private static int clientTotal = 5000;
     private static int threadTotal = 50;

@@ -1,6 +1,6 @@
-package com.example.concurrency;
+package com.example.concurrency.count;
 
-import com.example.concurrency.annoations.NotThreadSafe;
+import com.example.concurrency.annoations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,17 +8,18 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
-@NotThreadSafe
-public class ConcurrencyTest {
+@ThreadSafe
+public class CountExample2 {
 
-    private static Logger logger = LoggerFactory.getLogger(ConcurrencyTest.class);
+    private static Logger logger = LoggerFactory.getLogger(CountExample2.class);
 
     private static int clientTotal = 5000;
-    private static int threadTotal = 50;
-    private static int count = 0;
+    private static int threadTotal = 200;
+    private static AtomicInteger count = new AtomicInteger(0);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         ExecutorService executorService = Executors.newCachedThreadPool();
         final Semaphore semaphore = new Semaphore(threadTotal);
         final CountDownLatch countDownLatch = new CountDownLatch(clientTotal);
@@ -28,18 +29,19 @@ public class ConcurrencyTest {
                     semaphore.acquire();
                     add();
                     semaphore.release();
-                }catch (Exception e){
+                } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
                 countDownLatch.countDown();
             });
+
         }
         countDownLatch.await();
         executorService.shutdown();
-        logger.info("count: " + count);
+        logger.info("count: " + count.get());
     }
 
-    private static void add(){
-        count++;
+    private static void add() {
+        count.incrementAndGet();
     }
 }
