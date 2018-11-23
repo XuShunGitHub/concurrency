@@ -1,8 +1,7 @@
 package com.example.concurrency.count;
 
 import com.example.concurrency.annoations.ThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -10,10 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 @ThreadSafe
 public class CountExample2 {
 
-    private static Logger logger = LoggerFactory.getLogger(CountExample2.class);
 
     private static int clientTotal = 5000;
     private static int threadTotal = 200;
@@ -30,7 +29,7 @@ public class CountExample2 {
                     add();
                     semaphore.release();
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
                 countDownLatch.countDown();
             });
@@ -38,7 +37,7 @@ public class CountExample2 {
         }
         countDownLatch.await();
         executorService.shutdown();
-        logger.info("count: " + count.get());
+        log.info("count: " + count.get());
     }
 
     private static void add() {
