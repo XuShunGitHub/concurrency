@@ -1,25 +1,22 @@
-package com.example.concurrency.atomic;
+package com.example.concurrency.example.count;
 
-import com.example.concurrency.annoations.ThreadSafe;
+import com.example.concurrency.annoations.NotThreadSafe;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-@ThreadSafe
-public class AtomicExample6 {
+@NotThreadSafe
+public class CountExample1 {
 
     private static int clientTotal = 5000;
-    private static int threadTotal = 200;
+    private static int threadTotal = 50;
+    private static int count = 0;
 
-    private static AtomicBoolean isHappened = new AtomicBoolean(false);
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws InterruptedException {
         ExecutorService executorService = Executors.newCachedThreadPool();
         final Semaphore semaphore = new Semaphore(threadTotal);
         final CountDownLatch countDownLatch = new CountDownLatch(clientTotal);
@@ -27,23 +24,20 @@ public class AtomicExample6 {
             executorService.execute(() -> {
                 try {
                     semaphore.acquire();
-                    test();
+                    add();
                     semaphore.release();
-                } catch (Exception e) {
+                }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
                 countDownLatch.countDown();
             });
-
         }
         countDownLatch.await();
         executorService.shutdown();
-        log.info("isHappened: " + isHappened);
+        log.info("count: " + count);
     }
 
-    private static void test() {
-        if (isHappened.compareAndSet(false, true)) {
-            log.info("execute update " + isHappened.get());
-        }
+    private static void add(){
+        count++;
     }
 }
